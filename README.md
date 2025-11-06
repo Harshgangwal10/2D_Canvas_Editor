@@ -1,10 +1,6 @@
 # Simple 2D Canvas Editor
-
----
-
-## 🎨 Features
-
-* **Home Page**
+##  Features
+**Home Page**
 
   * Simple landing page
   * Create a new canvas with a button
@@ -12,24 +8,19 @@
 
 * **Canvas Editor**
 
-  * Add **Rectangles**, **Circles**, **Text**, and a **Pen tool**
+  * Add Rectangles, Circles, Text, and a Pen tool
   * Move, resize, rotate, and delete objects
-  * Edit **text content** and **object colors**
+  * Edit text content and object colors
   * Save canvas state to Firestore and reload it on page revisit
   * Supports continuous editing via URL
 
-
----
-
-## 🛠 Tech Stack
+## Tech Stack
 
 * **React** - Frontend UI framework
 * **Fabric.js** - Canvas rendering and manipulation
 * **Firebase Firestore** - Backend storage (No Auth required)
 
----
-
-## ⚡ Installation
+##  Installation
 
 1. **Clone the repository**
 
@@ -46,7 +37,7 @@ npm install
 
 3. **Set up Firebase**
 
-   * Create a Firebase project at [Firebase Console](https://console.firebase.google.com/)
+   * Create a Firebase project 
    * Create a Firestore database
    * Create a `.env` file in the root of your project:
 
@@ -62,6 +53,9 @@ VITE_FIREBASE_APP_ID=your_app_id
 * Add `.env` to `.gitignore` to avoid committing secrets.
 
 4. **Configure Firebase in `src/config/firebase.js`:**
+   
+
+**Also add loadCanvas and saveCanvas function here**
 
 ```javascript
 import { initializeApp } from "firebase/app";
@@ -79,26 +73,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 
-export const saveCanvas = async (canvasId, json) => {
-  try {
-    await setDoc(doc(db, "canvases", canvasId), { canvasData: json });
-    return true;
-  } catch (error) {
-    console.error("Error saving canvas:", error);
-    return false;
-  }
-};
-
-export const loadCanvas = async (canvasId) => {
-  try {
-    const docRef = doc(db, "canvases", canvasId);
-    const docSnap = await getDoc(docRef);
-    return docSnap.exists() ? docSnap.data().canvasData : null;
-  } catch (error) {
-    console.error("Error loading canvas:", error);
-    return null;
-  }
-};
 ```
 
 5. **Run the project**
@@ -107,10 +81,7 @@ export const loadCanvas = async (canvasId) => {
 npm run dev
 ```
 
-
----
-
-## 📂 Project Structure
+##  Project Structure
 
 ```
 src/
@@ -124,7 +95,6 @@ src/
 └─ .env
 ```
 
----
 <img width="1919" height="903" alt="image" src="https://github.com/user-attachments/assets/f55eacc9-a714-4f57-ab6c-cc861d9ec316" />
 <img width="1910" height="990" alt="image" src="https://github.com/user-attachments/assets/bba6825c-c824-45ef-9b93-9049c8e62945" />
 <img width="1919" height="958" alt="image" src="https://github.com/user-attachments/assets/49276287-a6a9-4b5d-a90a-643fdc8c3012" />
