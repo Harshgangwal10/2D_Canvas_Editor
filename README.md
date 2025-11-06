@@ -1,16 +1,129 @@
-# React + Vite
+# Simple 2D Canvas Editor
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+---
 
-Currently, two official plugins are available:
+## 🎨 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+* **Home Page**
 
-## React Compiler
+  * Simple landing page
+  * Create a new canvas with a button
+  * Each new canvas generates a unique Firestore document ID (`canvasId`) and opens the editor at `/canvas/:canvasId`
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+* **Canvas Editor**
 
-## Expanding the ESLint configuration
+  * Add **Rectangles**, **Circles**, **Text**, and a **Pen tool**
+  * Move, resize, rotate, and delete objects
+  * Edit **text content** and **object colors**
+  * Save canvas state to Firestore and reload it on page revisit
+  * Supports continuous editing via URL
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+---
+
+## 🛠 Tech Stack
+
+* **React** - Frontend UI framework
+* **Fabric.js** - Canvas rendering and manipulation
+* **Firebase Firestore** - Backend storage (No Auth required)
+
+---
+
+## ⚡ Installation
+
+1. **Clone the repository**
+
+```bash
+git clone <repo-url>
+cd <repo-folder>
+```
+
+2. **Install dependencies**
+
+```bash
+npm install
+```
+
+3. **Set up Firebase**
+
+   * Create a Firebase project at [Firebase Console](https://console.firebase.google.com/)
+   * Create a Firestore database
+   * Create a `.env` file in the root of your project:
+
+```
+VITE_FIREBASE_API_KEY=your_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+```
+
+* Add `.env` to `.gitignore` to avoid committing secrets.
+
+4. **Configure Firebase in `src/config/firebase.js`:**
+
+```javascript
+import { initializeApp } from "firebase/app";
+import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
+
+const firebaseConfig = {
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+};
+
+const app = initializeApp(firebaseConfig);
+export const db = getFirestore(app);
+
+export const saveCanvas = async (canvasId, json) => {
+  try {
+    await setDoc(doc(db, "canvases", canvasId), { canvasData: json });
+    return true;
+  } catch (error) {
+    console.error("Error saving canvas:", error);
+    return false;
+  }
+};
+
+export const loadCanvas = async (canvasId) => {
+  try {
+    const docRef = doc(db, "canvases", canvasId);
+    const docSnap = await getDoc(docRef);
+    return docSnap.exists() ? docSnap.data().canvasData : null;
+  } catch (error) {
+    console.error("Error loading canvas:", error);
+    return null;
+  }
+};
+```
+
+5. **Run the project**
+
+```bash
+npm run dev
+```
+
+
+---
+
+## 📂 Project Structure
+
+```
+src/
+├─ components/
+│  ├─ Home.jsx
+│  └─ CanvasEditor.jsx
+├─ config/
+│  └─ firebase.js
+├─ App.jsx
+├─ index.js
+└─ .env
+```
+
+---
+
+---
