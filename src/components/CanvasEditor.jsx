@@ -13,7 +13,7 @@ const CanvasEditor = () => {
   const [isSaving, setIsSaving] = useState(false);
    const [selectedColor, setSelectedColor] = useState("#000000");
 
-  // Initialize canvas
+  // Initializing  canvas
   useEffect(() => {
     const canvas = new fabric.Canvas(canvasRef.current, {
       width: 1400,
@@ -83,8 +83,8 @@ const handleSave = async () => {
     canvas.add(text);
   };
 
-  //  Toggle Pen
-  const togglePen = () => {
+  // Pen for drawing
+  const Pen = () => {
     const canvas = fabricRef.current;
     canvas.isDrawingMode = !canvas.isDrawingMode;
     setIsDrawingMode(canvas.isDrawingMode);
@@ -114,7 +114,7 @@ const handleSave = async () => {
     <div className="canvas-editor">
   <h2>Canvas Editor</h2>
 
-  {/* Show Canvas ID */}
+  {/* showing Canvas ID below the title  */}
 
   <div className="canvas-id">Canvas ID: {canvasId}</div>
 
@@ -138,7 +138,7 @@ const handleSave = async () => {
   Add Text
 </button>
 
-    <button onClick={togglePen}>
+    <button onClick={Pen}>
       {isDrawingMode ? "Disable Pen" : "Enable Pen"}
     </button>
     <button onClick={deleteSelected}>Delete Selected</button>
@@ -147,13 +147,12 @@ const handleSave = async () => {
     </button>
 
    
-    <div className="color-picker-wrapper">
+    <div className="color-picker">
       <input
         type="color"
         value={selectedColor}
         onChange={(e) => changeColor(e.target.value)}
         title="Pick Color"
-        className="color-picker"
       />
     </div>
   </div>
