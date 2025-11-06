@@ -12,7 +12,7 @@
   * Move, resize, rotate, and delete objects
   * Edit text content and object colors
   * Save canvas state to Firestore and reload it on page revisit
-  * Supports continuous editing via URL
+ 
 
 ## Tech Stack
 
@@ -94,6 +94,8 @@ src/
 ├─ index.js
 └─ .env
 ```
+
+**ScreenShot**
 
 <img width="1919" height="903" alt="image" src="https://github.com/user-attachments/assets/f55eacc9-a714-4f57-ab6c-cc861d9ec316" />
 <img width="1910" height="990" alt="image" src="https://github.com/user-attachments/assets/bba6825c-c824-45ef-9b93-9049c8e62945" />
