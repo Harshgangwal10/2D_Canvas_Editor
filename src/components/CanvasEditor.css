@@ -1,0 +1,51 @@
+.canvas-editor {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.canvas-container {
+  display: block;
+  width: 1000px;
+  height: 500px;
+}
+
+.canvas-id {
+  font-weight: bold;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.canvas-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+  padding: 20px;
+  border: 5px solid #de6a11; 
+}
+
+.color-picker-wrapper {
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  border-radius: 8px;
+  background-color: #fff; 
+}
+
+.color-picker {
+  width: 40px;
+  height: 40px;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+  padding: 0;
+}
+
