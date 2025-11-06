@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import * as fabricModule from "fabric";
+import { fabric } from "fabric";
 import { useParams } from "react-router-dom";
 import {loadCanvas, saveCanvas} from '../config/firebase.js'
 import "./CanvasEditor.css";
@@ -24,7 +24,7 @@ const CanvasEditor = () => {
     fabricRef.current = canvas;
 
 
- // Load existing canvas data if present in Firestore
+ // Loading existing canvas data if present in Firestore
  
 const load = async () => {
     const data = await loadCanvas(canvasId);
@@ -40,7 +40,7 @@ const load = async () => {
    // Save Canvas to Firestore
 const handleSave = async () => {
   setIsSaving(true);
-  const success = await saveCanvas(canvasId, fabricRef.current.toJSON(["selectable", "editable"]));
+  const success = await saveCanvas(canvasId, fabricRef.current);
   if (success) alert("Canvas saved successfully!");
   else alert("Error saving canvas. Check console.");
   setIsSaving(false);
@@ -72,16 +72,19 @@ const handleSave = async () => {
   };
 
   //  Add Text
-  const addText = () => {
-    const canvas = fabricRef.current;
-    const text = new fabric.Textbox("Edit me!", {
-      left: 300,
-      top: 150,
-      fontSize: 24,
-      fill: "black",
-    });
-    canvas.add(text);
-  };
+const addText = () => {
+  const canvas = fabricRef.current;
+  const text = new fabric.Textbox("Edit !", {
+    left: 300,
+    top: 150,
+    fontSize: 24,
+    fill: selectedColor,       
+    editable: true,
+    textBaseline: " alphabetic ",
+  });
+  canvas.add(text);
+};
+
 
   // Pen for drawing
   const Pen = () => {
@@ -98,6 +101,7 @@ const handleSave = async () => {
       canvas.remove(activeObj);
     }
   };
+
   const changeColor = (color) => {
     setSelectedColor(color);
     const activeObj = fabricRef.current.getActiveObject();
@@ -121,23 +125,7 @@ const handleSave = async () => {
   <div className="toolbar">
     <button onClick={addRectangle}>Add Rectangle</button>
     <button onClick={addCircle}>Add Circle</button>
-    <button
-  onClick={() => {
-    const canvas = fabricRef.current;
-    const text = new fabric.Textbox("Edit me!", {
-      left: 300,
-      top: 150,
-      fontSize: 24,
-      fill: selectedColor,
-      editable: true,
-      textBaseline: "alphabetic", 
-    });
-    canvas.add(text);
-  }}
->
-  Add Text
-</button>
-
+  <button onClick={addText}>Add Text</button>
     <button onClick={Pen}>
       {isDrawingMode ? "Disable Pen" : "Enable Pen"}
     </button>
@@ -153,11 +141,12 @@ const handleSave = async () => {
         value={selectedColor}
         onChange={(e) => changeColor(e.target.value)}
         title="Pick Color"
+        className="color-input"
       />
     </div>
   </div>
 
-  <div className="canvas-wrapper">
+  <div className="canvas-box">
     <canvas ref={canvasRef} className="canvas-container" />
   </div>
 </div>

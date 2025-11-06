@@ -32,13 +32,27 @@ const db = getFirestore(app);
 
 //  Load canvas data by ID
 
- const loadCanvas = async (canvasId) => {
+const loadCanvas = async (canvasId) => {
   try {
     const docRef = doc(db, "canvases", canvasId);
     const docSnap = await getDoc(docRef);
+
     if (docSnap.exists()) {
       const data = docSnap.data();
-      if (data.canvasData && data.canvasData.objects) return data.canvasData;
+      if (!data.canvasData) return null;
+
+      const canvasData = JSON.parse(JSON.stringify(data.canvasData, (key, value) => {
+        if (typeof value === "string" && value.startsWith("[") && value.endsWith("]")) {
+          try {
+            return JSON.parse(value);
+          } catch (e) {
+            return value;
+          }
+        }
+        return value;
+      }));
+
+      return canvasData;
     }
     return null;
   } catch (err) {
@@ -48,20 +62,30 @@ const db = getFirestore(app);
 };
 
 
+
  //  Save canvas data by ID
  
- const saveCanvas = async (canvasId, canvasJson) => {
+const saveCanvas = async (canvasId, canvas) => {
   try {
-    const cleanJson = JSON.parse(JSON.stringify(canvasJson));
+    const canvasJson = canvas.toJSON(["selectable", "editable"]);
+    const cleanJson = JSON.parse(JSON.stringify(canvasJson, (key, value) => {
+      if (Array.isArray(value)) {
+        return value.map(v => (Array.isArray(v) ? JSON.stringify(v) : v));
+      }
+      return value;
+    }));
+
     await updateDoc(doc(db, "canvases", canvasId), {
       canvasData: cleanJson,
       updatedAt: new Date(),
     });
+
     return true;
   } catch (err) {
     console.error("Error saving canvas:", err);
     return false;
   }
 };
+
 
 export { db, app, loadCanvas, saveCanvas, createNewCanvas };
