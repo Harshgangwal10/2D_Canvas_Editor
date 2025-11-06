@@ -32,7 +32,7 @@
   border: 5px solid #de6a11; 
 }
 
-.color-picker-wrapper {
+.color-picker {
   display: flex;
   align-items: center;
   padding: 2px;
@@ -40,7 +40,7 @@
   background-color: #fff; 
 }
 
-.color-picker {
+.color-picker input {
   width: 40px;
   height: 40px;
   border: none;
