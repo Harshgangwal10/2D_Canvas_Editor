@@ -1,4 +1,3 @@
-// CanvasEditor.jsx
 import React, { useEffect, useRef, useState } from "react";
 import * as fabricModule from "fabric";
 import { useParams } from "react-router-dom";
@@ -24,16 +23,15 @@ const CanvasEditor = () => {
     });
     fabricRef.current = canvas;
 
+
+ // Load existing canvas data if present in Firestore
  
 const load = async () => {
-  const data = await loadCanvas(canvasId);
-  if (data) {
-    
-    const parsedData = typeof data === "string" ? JSON.parse(data) : data;
-    fabricRef.current.loadFromJSON(parsedData, () => fabricRef.current.renderAll());
-  }
-};
-
+    const data = await loadCanvas(canvasId);
+    if (data) {
+      fabricRef.current.loadFromJSON(data, () => fabricRef.current.renderAll());
+    }
+  };
 
     load();
     return () => canvas.dispose();
@@ -42,24 +40,11 @@ const load = async () => {
    // Save Canvas to Firestore
 const handleSave = async () => {
   setIsSaving(true);
-  const canvas = fabricRef.current;
-  canvas.isDrawingMode = false; 
-  canvas.renderAll();
-
-  try {
-   
-    const json = JSON.stringify(canvas.toJSON(["selectable", "editable"]));
-    const success = await saveCanvas(canvasId, json);
-    if (success) alert("Canvas saved successfully!");
-    else alert("Error saving canvas. Check console.");
-  } catch (error) {
-    console.error("Error saving canvas:", error);
-    alert("Error saving canvas. Check console.");
-  }
-
+  const success = await saveCanvas(canvasId, fabricRef.current.toJSON(["selectable", "editable"]));
+  if (success) alert("Canvas saved successfully!");
+  else alert("Error saving canvas. Check console.");
   setIsSaving(false);
 };
-
 
   // Add Rectangle
   const addRectangle = () => {
@@ -99,7 +84,7 @@ const handleSave = async () => {
   };
 
   //  Toggle Pen
-  const Pen = () => {
+  const togglePen = () => {
     const canvas = fabricRef.current;
     canvas.isDrawingMode = !canvas.isDrawingMode;
     setIsDrawingMode(canvas.isDrawingMode);
@@ -153,7 +138,7 @@ const handleSave = async () => {
   Add Text
 </button>
 
-    <button onClick={Pen}>
+    <button onClick={togglePen}>
       {isDrawingMode ? "Disable Pen" : "Enable Pen"}
     </button>
     <button onClick={deleteSelected}>Delete Selected</button>
