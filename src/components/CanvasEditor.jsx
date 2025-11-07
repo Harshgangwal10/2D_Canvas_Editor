@@ -14,28 +14,36 @@ const CanvasEditor = () => {
    const [selectedColor, setSelectedColor] = useState("#000000");
 
   // Initializing  canvas
-  useEffect(() => {
-    const canvas = new fabric.Canvas(canvasRef.current, {
-      width: 1400,
-      height: 500,
-      backgroundColor: "#ffffffff",
-    
-    });
-    fabricRef.current = canvas;
+ useEffect(() => {
+  const canvasElement = canvasRef.current;
+  const canvas = new fabric.Canvas(canvasElement, {
+    width: canvasElement.parentNode.offsetWidth,
+    height: window.innerHeight * 0.6,
+  });
+  fabricRef.current = canvas;
 
-
- // Loading existing canvas data if present in Firestore
- 
-const load = async () => {
+  const load = async () => {
     const data = await loadCanvas(canvasId);
     if (data) {
       fabricRef.current.loadFromJSON(data, () => fabricRef.current.renderAll());
     }
   };
+  load();
 
-    load();
-    return () => canvas.dispose();
-  }, [canvasId]);
+  const handleResize = () => {
+    canvas.setWidth(canvasElement.parentNode.offsetWidth);
+    canvas.setHeight(window.innerHeight * 0.6);
+    canvas.renderAll();
+  };
+
+  window.addEventListener("resize", handleResize);
+
+  return () => {
+    window.removeEventListener("resize", handleResize);
+    canvas.dispose();
+  };
+}, [canvasId]);
+
 
    // Save Canvas to Firestore
 const handleSave = async () => {
@@ -147,7 +155,7 @@ const addText = () => {
   </div>
 
   <div className="canvas-box">
-    <canvas ref={canvasRef} className="canvas-container" />
+    <canvas ref={canvasRef}  />
   </div>
 </div>
 
